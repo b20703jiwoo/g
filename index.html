@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 마음 은하계 (Mind Galaxy) - 완벽 연동 버전</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <style>
+        body {
+            margin: 0; background-color: #0b0b16; color: #ffffff;
+            font-family: 'Apple SD Gothic Neo', sans-serif; overflow: hidden;
+        }
+
+        /* 3D 캔버스 배경 */
+        #canvas-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+        }
+
+        /* UI 레이어 */
+        .ui-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; pointer-events: none; display: flex; justify-content: center; align-items: center;
+        }
+
+        .window {
+            background: rgba(15, 15, 35, 0.75); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15); padding: 25px;
+            border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            width: 100%; max-width: 480px; pointer-events: auto;
+            max-height: 85vh; overflow-y: auto; display: none; text-align: center;
+        }
+        .window.active { display: block; }
+
+        /* 스크롤바 커스텀 */
+        .window::-webkit-scrollbar { width: 6px; }
+        .window::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+        h1, h2, h3 { margin-top: 0; text-shadow: 0 0 15px rgba(0, 255, 204, 0.5); }
+        .subtitle { color: #aaaacb; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.4; }
+
+        /* 버튼 및 대시보드 */
+        .btn {
+            background: linear-gradient(45deg, #a29bfe, #00cec9); color: white; border: none;
+            padding: 12px 24px; font-weight: bold; border-radius: 30px; cursor: pointer;
+            transition: 0.3s ease; margin: 8px 4px; font-size: 0.95rem;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,206,201,0.4); }
+        .btn.outline { background: transparent; border: 2px solid #00cec9; color: #00cec9; }
+        .btn-danger { background: #ff7675; }
+
+        input, select {
+            width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4);
+            color: white; box-sizing: border-box; font-size: 1rem;
+        }
+
+        .flex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .coin-bar { font-size: 1.2rem; color: #ffeaa7; font-weight: bold; margin: 15px 0; text-shadow: 0 0 10px rgba(255,234,167,0.5); }
+
+        /* 리스트 스타일 (상점 & 퀘스트) */
+        .list-item {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px; border-radius: 14px; margin: 8px 0;
+            display: flex; justify-content: space-between; align-items: center; text-align: left;
+        }
+        .list-item span { font-size: 0.85rem; color: #b2bec3; display: block; margin-top: 3px; }
+
+        /* 상단 상시 인포 바 */
+        #top-bar {
+            position: absolute; top: 20px; left: 20px; right: 20px; z-index: 100;
+            display: flex; justify-content: space-between; pointer-events: none;
+        }
+        .info-pill {
+            background: rgba(10, 10, 25, 0.6); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px;
+            border-radius: 50px; pointer-
